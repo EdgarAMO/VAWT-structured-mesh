@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1906                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+// CONSTANTS
+
+// freestream velocity:			U
+// turbulence intensity: 		I
+// revolutions per minute:		RPM
+// kinematic viscosity:			NU
+// density:						RHO
+
+// turbine's radius: 			TR
+// shaft's radius:				SR
+// number of blades:			NB
+// blade's chord:				CH
+// blade's camber:				CM
+// blade's thickness			TH
+
+// domain's half width:			WD
+// domain's entrance:			IN
+// domain's wake:				E1
+// domain's outlet:				E2
+// domain's depth:				DP
+
+U								5;
+I								0.05;
+RPM								1000;
+NU								1e-5;
+RHO								1.2;
+
+TR								0.08;
+SR								0.01;
+NB								3;
+CH								0.05;
+CM								0.05;
+TH								0.05;
+
+WD								0.30;
+IN								0.30;
+E1								0.50;
+E2								2.00;
+DP								0.01;
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+// COMPUTED PARAMETERS
+
+// turbulent kinetic energy:		1.5 * (U * I) ** 2
+// epsilon:							(Cm ^ 0.75) * (k ^ 1.5) / l
+// omega:							sqrt(k) / ((Cm ^ 0.25) * l)
+// nut:								Cm * (k ^ 2) / epsilon
+// RPS:								RPM * (2 * PI / 60)
+// AREF:							chord * depth
+			
+k									#calc"(3./2.) * pow($U * 0.01, 2)";
+epsilon  							#calc"pow(0.09, 0.75) * pow($k, 1.5) / (2 * $TR * 0.08)";
+omega	        					#calc"sqrt($k) / (pow(0.09, 0.25) * (2 * $TR * 0.08))";
+nut   								#calc"0.09 * pow($k, 2) / $epsilon";
+RPS									#calc"$RPM * (2.0 * 3.141592654 / 60.0)";
+AREF								#calc"$CH * $DP";
+
+
+
+
+
+
+ 
+
+
