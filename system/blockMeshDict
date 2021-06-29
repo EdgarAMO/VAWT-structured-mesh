@@ -62,8 +62,8 @@ mx2		100;	// no. of cells from turbine's upwind face to downwind face
 mx3		100;	// no. of cells from turbine's downwind face to wake's end
 mx4		50;		// no. of cells from wake's end to outlet
 my1		50;		// no. of cells from domain's top to turbine's top
-my2		100;	// no. of cells from turbine's top to turbine's bottom
-my3		50; 	// no. of cells from turbine's bottom to domain's bottom
+my2		100;	// no. of cells from turbine's top to turbine's bottom	
+my3		50; 	// no. of cells from turbine's bottom to domain's bottom	
 
 vertices
 (	
