@@ -1,0 +1,849 @@
+/*----------/*--------------------------------*- C++ -*-----------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  dev                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include 	"../constants"
+
+convertToMeters 1;
+
+// DEPTHS
+zneg 	#calc"-$DP / 2.0";
+zpos	#calc"$DP / 2.0";
+
+// ROTOR
+th		#calc"asin(($CH / 2.0) / $TR)";		// arc opening half-angle
+sg 		#calc"$TR * cos($th)";				// segment from origin to arc base
+pi		#calc"4.0 * atan(1.0)";				// self explanatory
+er		#calc"1.15 * $TR";					// rotor's outer radius
+h1 		#calc"$sg + ($CM - $TH/2) * $CH"; 	// segment from origin to lower arc
+h2  	#calc"$sg + ($CM + $TH/2) * $CH"; 	// segment from origin to upper arc
+
+a1		#calc"$pi / 2.0 - $th";
+a2		#calc"$pi / 2.0 + $th";
+a3		#calc"degToRad(210) - $th";
+a4		#calc"degToRad(210) + $th";
+a5		#calc"degToRad(330) - $th";
+a6		#calc"degToRad(330) + $th";
+
+b1 		#calc"degToRad(90)";
+b2 		#calc"degToRad(150)";
+b3 		#calc"degToRad(210)";
+b4 		#calc"degToRad(270)";
+b5 		#calc"degToRad(330)";
+b6 		#calc"degToRad(30)";
+
+nx1		100;	// number of cells along arc sector
+nx2		125; 	// number of cells along empty sector
+ny1		50;		// number of cells from rotor diameter to outer radius
+ny2		100; 	// number of cells from shaft diameter to rotor diameter
+
+// STATIC 
+xpos	#calc"$er * cos(degToRad(45))";
+xneg 	#calc"$er * cos(degToRad(135))";
+ypos	#calc"$er * sin(degToRad(45))";
+yneg 	#calc"$er * sin(degToRad(225))";
+toph	$WD;
+both	#calc"-$WD";
+
+mx1		50; 	// no. of cells from inlet to turbine's upwind face
+mx2		100;	// no. of cells from turbine's upwind face to downwind face
+mx3		100;	// no. of cells from turbine's downwind face to wake's end
+mx4		50;		// no. of cells from wake's end to outlet
+my1		50;		// no. of cells from domain's top to turbine's top
+my2		100;	// no. of cells from turbine's top to turbine's bottom
+my3		50; 	// no. of cells from turbine's bottom to domain's bottom
+
+vertices
+(	
+	// ROTOR 
+	(#calc"$SR * cos($a1)"		#calc"$SR * sin($a1)"		$zneg) // 0 
+	(#calc"$TR * cos($a1)"		#calc"$TR * sin($a1)"		$zneg) // 1 
+	(#calc"$er * cos($a1)"		#calc"$er * sin($a1)"		$zneg) // 2
+
+	(#calc"$SR * cos($a2)"		#calc"$SR * sin($a2)"		$zneg) // 3 
+	(#calc"$TR * cos($a2)"		#calc"$TR * sin($a2)"		$zneg) // 4 
+	(#calc"$er * cos($a2)"		#calc"$er * sin($a2)"		$zneg) // 5 
+
+	(#calc"$SR * cos($a3)"		#calc"$SR * sin($a3)"		$zneg) // 6 
+	(#calc"$TR * cos($a3)"		#calc"$TR * sin($a3)"		$zneg) // 7 
+	(#calc"$er * cos($a3)"		#calc"$er * sin($a3)"		$zneg) // 8 
+
+	(#calc"$SR * cos($a4)"		#calc"$SR * sin($a4)"		$zneg) // 9
+	(#calc"$TR * cos($a4)"		#calc"$TR * sin($a4)"		$zneg) // 10
+	(#calc"$er * cos($a4)"		#calc"$er * sin($a4)"		$zneg) // 11
+
+	(#calc"$SR * cos($a5)"		#calc"$SR * sin($a5)"		$zneg) // 12
+	(#calc"$TR * cos($a5)"		#calc"$TR * sin($a5)"		$zneg) // 13
+	(#calc"$er * cos($a5)"		#calc"$er * sin($a5)"		$zneg) // 14
+
+	(#calc"$SR * cos($a6)"		#calc"$SR * sin($a6)"		$zneg) // 15
+	(#calc"$TR * cos($a6)"		#calc"$TR * sin($a6)"		$zneg) // 16
+	(#calc"$er * cos($a6)"		#calc"$er * sin($a6)"		$zneg) // 17
+
+	(#calc"$TR * cos($a1)"		#calc"$TR * sin($a1)"		$zneg) // 18 repeated
+	(#calc"$TR * cos($a3)"		#calc"$TR * sin($a3)"		$zneg) // 19 repeated
+	(#calc"$TR * cos($a5)"		#calc"$TR * sin($a5)"		$zneg) // 20 repeated
+
+	(#calc"$SR * cos($a1)"		#calc"$SR * sin($a1)"		$zpos)  // 21 
+	(#calc"$TR * cos($a1)"		#calc"$TR * sin($a1)"		$zpos)  // 22
+	(#calc"$er * cos($a1)"		#calc"$er * sin($a1)"		$zpos)  // 23
+
+	(#calc"$SR * cos($a2)"		#calc"$SR * sin($a2)"		$zpos)  // 24
+	(#calc"$TR * cos($a2)"		#calc"$TR * sin($a2)"		$zpos)  // 25
+	(#calc"$er * cos($a2)"		#calc"$er * sin($a2)"		$zpos)  // 26
+
+	(#calc"$SR * cos($a3)"		#calc"$SR * sin($a3)"		$zpos)  // 27
+	(#calc"$TR * cos($a3)"		#calc"$TR * sin($a3)"		$zpos)  // 28
+	(#calc"$er * cos($a3)"		#calc"$er * sin($a3)"		$zpos)  // 29
+
+	(#calc"$SR * cos($a4)"		#calc"$SR * sin($a4)"		$zpos)  // 30
+	(#calc"$TR * cos($a4)"		#calc"$TR * sin($a4)"		$zpos)  // 31
+	(#calc"$er * cos($a4)"		#calc"$er * sin($a4)"		$zpos)  // 32
+
+	(#calc"$SR * cos($a5)"		#calc"$SR * sin($a5)"		$zpos)  // 33
+	(#calc"$TR * cos($a5)"		#calc"$TR * sin($a5)"		$zpos)  // 34
+	(#calc"$er * cos($a5)"		#calc"$er * sin($a5)"		$zpos)  // 35
+
+	(#calc"$SR * cos($a6)"		#calc"$SR * sin($a6)"		$zpos)  // 36
+	(#calc"$TR * cos($a6)"		#calc"$TR * sin($a6)"		$zpos)  // 37
+	(#calc"$er * cos($a6)"		#calc"$er * sin($a6)"		$zpos)  // 38
+
+	(#calc"$TR * cos($a1)"		#calc"$TR * sin($a1)"		$zpos)  // 39 repeated
+	(#calc"$TR * cos($a3)"		#calc"$TR * sin($a3)"		$zpos)  // 40 repeated
+	(#calc"$TR * cos($a5)"		#calc"$TR * sin($a5)"		$zpos)  // 41 repeated
+
+	// STATIC 
+	(#calc"-$IN"		$toph		$zneg)	// 42
+	(#calc"-$IN"		$ypos		$zneg)	// 43
+	(#calc"-$IN"		$yneg		$zneg) 	// 44
+	(#calc"-$IN"		$both		$zneg) 	// 45
+
+	($xneg				$toph		$zneg)	// 46
+	($xneg				$ypos		$zneg)	// 47
+	($xneg				$yneg		$zneg) 	// 48
+	($xneg				$both		$zneg) 	// 49
+
+	($xpos				$toph		$zneg)	// 50
+	($xpos				$ypos		$zneg)	// 51
+	($xpos				$yneg		$zneg) 	// 52
+	($xpos				$both		$zneg) 	// 53
+	
+	($E1				$toph		$zneg)	// 54
+	($E1				$ypos		$zneg)	// 55
+	($E1				$yneg		$zneg) 	// 56
+	($E1				$both		$zneg) 	// 57
+
+	($E2				$toph		$zneg)	// 58
+	($E2				$ypos		$zneg)	// 59
+	($E2				$yneg		$zneg) 	// 60
+	($E2				$both		$zneg) 	// 61
+
+	(#calc"-$IN"		$toph		$zpos)	// 62
+	(#calc"-$IN"		$ypos		$zpos)	// 63
+	(#calc"-$IN"		$yneg		$zpos) 	// 64
+	(#calc"-$IN"		$both		$zpos) 	// 65
+
+	($xneg				$toph		$zpos)	// 66
+	($xneg				$ypos		$zpos)	// 67
+	($xneg				$yneg		$zpos) 	// 68
+	($xneg				$both		$zpos) 	// 69
+
+	($xpos				$toph		$zpos)	// 70
+	($xpos				$ypos		$zpos)	// 71
+	($xpos				$yneg		$zpos) 	// 72
+	($xpos				$both		$zpos) 	// 73
+	
+	($E1				$toph		$zpos)	// 74
+	($E1				$ypos		$zpos)	// 75
+	($E1				$yneg		$zpos) 	// 76
+	($E1				$both		$zpos) 	// 77
+
+	($E2				$toph		$zpos)	// 78
+	($E2				$ypos		$zpos)	// 79
+	($E2				$yneg		$zpos) 	// 80
+	($E2				$both		$zpos) 	// 81
+
+);
+
+blocks
+(   
+	// ROTOR 
+    hex (4  1  2  5  25 22 23 26) rotor ($nx1 $ny1 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (1  16 17 2  22 37 38 23) rotor ($nx2 $ny1 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (3  0  18 4  24 21 39 25) rotor ($nx1 $ny2 1) 
+	simpleGrading
+		(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+
+    hex (0  15 16 18 21 36 37 39) rotor ($nx2 $ny2 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+    
+    hex (10 7  8  11 31 28 29 32) rotor ($nx1 $ny1 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (7  4  5  8  28 25 26 29) rotor ($nx2 $ny1 1) 
+	simpleGrading
+		(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (9  6  19 10 30 27 40 31) rotor ($nx1 $ny2 1) 
+	simpleGrading
+		(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+
+    hex (6  3  4  19 27 24 25 40) rotor ($nx2 $ny2 1) 
+	simpleGrading
+		(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+
+    
+    hex (16 13 14 17 37 34 35 38) rotor ($nx1 $ny1 1) 
+	simpleGrading
+		(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (13 10 11 14 34 31 32 35) rotor ($nx2 $ny1 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.4	0.2		1.00)
+			(0.4	0.2		1.00)
+		)
+		1
+	)
+
+    hex (15 12 20 16 36 33 41 37) rotor ($nx1 $ny2 1)	
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+
+    hex (12 9  10 20 33 30 31 41) rotor ($nx2 $ny2 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.3		5.00)
+			(0.4	0.4		1.00)
+			(0.3 	0.3		0.25)
+		)
+		(
+			(0.1	0.1		10.0)
+			(0.7	0.2		1.00)
+			(0.2	0.7		0.01)
+		)
+		1
+	)
+
+	// STATIC
+	// upper1
+	hex (43 47 46 42 63 67 66 62) ($mx1 $my1 1) 
+	simpleGrading
+	(
+		(
+			(0.2 	0.2		2.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.5		0.02)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.6	0.2		1.00)
+			(0.2	0.2		0.50)
+		)
+		1
+	)
+	
+	// middle1
+	hex (44 48 47 43 64 68 67 63) ($mx1 $my2 1) 
+	simpleGrading
+	(
+		(
+			(0.2 	0.2		2.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.5		0.02)
+		)
+		1
+		1
+	)
+
+	// lower1
+	hex (45 49 48 44 65 69 68 64) ($mx1 $my3 1) 
+	simpleGrading
+	(
+		(
+			(0.2 	0.2		2.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.5		0.02)
+		)
+		(
+			(0.2	0.2		2.00)
+			(0.6	0.2		1.00)
+			(0.2	0.6		0.10)
+		)
+		1
+	)
+
+	// upper2
+	hex (47 51 50 46 67 71 70 66) ($mx2 $my1 1) 
+	simpleGrading
+	(
+		1
+		(
+			(0.2	0.6		10.0)
+			(0.6	0.2		1.00)
+			(0.2	0.2		0.50)
+		)
+		1
+	)
+  	
+	// lower2
+	hex (49 53 52 48 69 73 72 68) ($mx2 $my3 1)  
+	simpleGrading
+	(
+		1
+		(
+			(0.2	0.2		2.00)
+			(0.6	0.2		1.00)
+			(0.2	0.6		0.10)
+		)
+		1
+	)
+	
+	// upper3
+	hex (51 55 54 50 71 75 74 70) ($mx3 $my1 1) 
+	simpleGrading 
+	(
+		(
+			(0.3 	0.5		10.0)
+			(0.3	0.3		1.00)
+			(0.4 	0.2		1.00)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.6	0.2		1.00)
+			(0.2	0.2		0.50)
+		)
+		1
+	)
+
+	// middle3
+	hex (52 56 55 51 72 76 75 71) ($mx3 $my2 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.5		10.0)
+			(0.3	0.3		1.00)
+			(0.4 	0.2		1.00)
+		)
+		1
+		1
+	)
+
+	// lower3
+	hex (53 57 56 52 73 77 76 72) ($mx3 $my3 1) 
+	simpleGrading
+	(
+		(
+			(0.3 	0.5		10.0)
+			(0.3	0.3		1.00)
+			(0.4 	0.2		1.00)
+		)
+		(
+			(0.2	0.2		2.00)
+			(0.6	0.2		1.00)
+			(0.2	0.6		0.10)
+		)
+		1
+	)
+
+	// upper4
+	hex (55 59 58 54 75 79 78 74) ($mx4 $my1 1) 
+	simpleGrading 
+	(
+		(
+			(0.2 	0.5		1.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.2		1.00)
+		)
+		(
+			(0.2	0.6		10.0)
+			(0.6	0.2		1.00)
+			(0.2	0.2		0.50)
+		)
+		1
+	)
+
+	// middle4
+	hex (56 60 59 55 76 80 79 75) ($mx4 $my2 1) 
+	simpleGrading 
+	(
+		(
+			(0.2 	0.5		1.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.2		1.00)
+		)
+		1
+		1
+	)
+	
+	// lower4
+	hex (57 61 60 56 77 81 80 76) ($mx4 $my3 1) 
+	simpleGrading
+	(
+		(
+			(0.2 	0.5		1.00)
+			(0.3	0.3		1.00)
+			(0.5 	0.2		1.00)
+		)
+		(
+			(0.2	0.2		2.00)
+			(0.6	0.2		1.00)
+			(0.2	0.6		0.10)
+		)
+		1
+	)  
+);
+
+edges
+(
+	// ROTOR 
+	arc 3  0  (#calc"$SR * cos($b1)"	#calc"$SR * sin($b1)"		$zneg)
+	arc 4  18 (#calc"$h1 * cos($b1)"	#calc"$h1 * sin($b1)"		$zneg)
+	arc 4  1  (#calc"$h2 * cos($b1)"	#calc"$h2 * sin($b1)"		$zneg)
+	arc 5  2  (#calc"$er * cos($b1)"	#calc"$er * sin($b1)"		$zneg)
+	
+	arc 6  3  (#calc"$SR * cos($b2)"	#calc"$SR * sin($b2)"		$zneg)
+	arc 7  4  (#calc"$TR * cos($b2)"	#calc"$TR * sin($b2)"		$zneg)
+	arc 19 4  (#calc"$TR * cos($b2)"	#calc"$TR * sin($b2)"		$zneg)
+	arc 8  5  (#calc"$er * cos($b2)"	#calc"$er * sin($b2)"		$zneg)
+	
+	arc 9  6  (#calc"$SR * cos($b3)"	#calc"$SR * sin($b3)"		$zneg)
+	arc 10 19 (#calc"$h1 * cos($b3)"	#calc"$h1 * sin($b3)"		$zneg)
+	arc 10 7  (#calc"$h2 * cos($b3)"	#calc"$h2 * sin($b3)"		$zneg)
+	arc 11 8  (#calc"$er * cos($b3)"	#calc"$er * sin($b3)"		$zneg)
+	
+	arc 12  9 (#calc"$SR * cos($b4)"	#calc"$SR * sin($b4)"		$zneg)
+	arc 13 10 (#calc"$TR * cos($b4)"	#calc"$TR * sin($b4)"		$zneg)
+	arc 20 10 (#calc"$TR * cos($b4)"	#calc"$TR * sin($b4)"		$zneg)
+	arc 14 11 (#calc"$er * cos($b4)"	#calc"$er * sin($b4)"		$zneg)
+	
+	arc 15 12 (#calc"$SR * cos($b5)"	#calc"$SR * sin($b5)"		$zneg)
+	arc 16 20 (#calc"$h1 * cos($b5)"	#calc"$h1 * sin($b5)"		$zneg)
+	arc 16 13 (#calc"$h2 * cos($b5)"	#calc"$h2 * sin($b5)"		$zneg)
+	arc 17 14 (#calc"$er * cos($b5)"	#calc"$er * sin($b5)"		$zneg)
+	
+	arc 0  15 (#calc"$SR * cos($b6)"	#calc"$SR * sin($b6)"		$zneg)
+	arc 1  16 (#calc"$TR * cos($b6)"	#calc"$TR * sin($b6)"		$zneg)
+	arc 18 16 (#calc"$TR * cos($b6)"	#calc"$TR * sin($b6)"		$zneg)
+	arc 2  17 (#calc"$er * cos($b6)"	#calc"$er * sin($b6)"		$zneg)
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	arc 24 21 (#calc"$SR * cos($b1)"	#calc"$SR * sin($b1)"		$zpos)
+	arc 25 39 (#calc"$h1 * cos($b1)"	#calc"$h1 * sin($b1)"		$zpos)
+	arc 25 22 (#calc"$h2 * cos($b1)"	#calc"$h2 * sin($b1)"		$zpos)
+	arc 26 23 (#calc"$er * cos($b1)"	#calc"$er * sin($b1)"		$zpos)
+	
+	arc 27 24 (#calc"$SR * cos($b2)"	#calc"$SR * sin($b2)"		$zpos)
+	arc 28 25 (#calc"$TR * cos($b2)"	#calc"$TR * sin($b2)"		$zpos)
+	arc 40 25 (#calc"$TR * cos($b2)"	#calc"$TR * sin($b2)"		$zpos)
+	arc 29 26 (#calc"$er * cos($b2)"	#calc"$er * sin($b2)"		$zpos)
+	
+	arc 30 27 (#calc"$SR * cos($b3)"	#calc"$SR * sin($b3)"		$zpos)
+	arc 31 40 (#calc"$h1 * cos($b3)"	#calc"$h1 * sin($b3)"		$zpos)
+	arc 31 28 (#calc"$h2 * cos($b3)"	#calc"$h2 * sin($b3)"		$zpos)
+	arc 32 29 (#calc"$er * cos($b3)"	#calc"$er * sin($b3)"		$zpos)
+	
+	arc 33 30 (#calc"$SR * cos($b4)"	#calc"$SR * sin($b4)"		$zpos)
+	arc 34 31 (#calc"$TR * cos($b4)"	#calc"$TR * sin($b4)"		$zpos)
+	arc 41 31 (#calc"$TR * cos($b4)"	#calc"$TR * sin($b4)"		$zpos)
+	arc 35 32 (#calc"$er * cos($b4)"	#calc"$er * sin($b4)"		$zpos)
+	
+	arc 36 33 (#calc"$SR * cos($b5)"	#calc"$SR * sin($b5)"		$zpos)
+	arc 37 41 (#calc"$h1 * cos($b5)"	#calc"$h1 * sin($b5)"		$zpos)
+	arc 37 34 (#calc"$h2 * cos($b5)"	#calc"$h2 * sin($b5)"		$zpos)
+	arc 38 35 (#calc"$er * cos($b5)"	#calc"$er * sin($b5)"		$zpos)
+	
+	arc 21 36 (#calc"$SR * cos($b6)"	#calc"$SR * sin($b6)"		$zpos)
+	arc 22 37 (#calc"$TR * cos($b6)"	#calc"$TR * sin($b6)"		$zpos)
+	arc 39 37 (#calc"$TR * cos($b6)"	#calc"$TR * sin($b6)"		$zpos)
+	arc 23 38 (#calc"$er * cos($b6)"	#calc"$er * sin($b6)"		$zpos)
+	
+	// STATIC 
+	arc 47 51 (0			$er				$zneg)
+	arc 47 48 (#calc"-$er"	0				$zneg)
+	arc 48 52 (0			#calc"-$er"		$zneg)
+	arc 52 51 (#calc"$er"	0				$zneg)
+
+	/* * * * * * * * * * * * * * * * * * * * * */
+
+	arc 67 71 (0			$er				$zpos)
+	arc 67 68 (#calc"-$er"	0				$zpos)
+	arc 68 72 (0			#calc"-$er"		$zpos)
+	arc 72 71 (#calc"$er"	0				$zpos)
+);
+
+faces																
+(																
+																
+);																
+																
+faces																
+(																
+																
+);
+
+faces																
+(																
+																
+);
+
+faces																
+(																
+																
+);																
+																
+faces																
+(																
+																
+);
+
+faces																
+(																
+																
+);																	
+																
+defaultPatch
+{
+    name frontAndBack;
+    type empty;
+}
+
+boundary
+(
+    shaft
+    {
+        type wall;
+        faces
+        (
+      		(0  3  24 21)
+			(3  6  27 24)
+			(6  9  30 27)
+			(9  12 33 30)
+			(12 15 36 33)
+			(15 0  21 36)
+        );
+    }
+
+    inlet
+    {
+        type patch;
+        faces
+        (
+        	(42 43 63 62)
+			(43 44 64 63)
+			(44 45 65 64)             
+        );
+    }
+
+    outlet
+    {
+        type patch;
+        faces
+        (
+        	(59 58 78 79)
+			(60 59 79 80)
+			(61 60 80 81)           
+        );
+    }
+
+    top
+    {
+        type wall;
+        faces
+        (
+        	(46 42 62 66)
+			(50 46 66 70)
+			(54 50 70 74)
+			(58 54 74 78)            
+        );
+    }
+
+    bottom
+    {
+        type wall;
+        faces
+        (
+        	(45 49 69 65)
+			(49 53 73 69)
+			(53 57 77 73)
+			(57 61 81 77)          
+        );
+    }
+
+    AMI1
+    {
+        type cyclicAMI;
+        inGroups 1(cyclicAMI);
+        matchTolerance 0.0001;
+        transform noOrdering;
+        neighbourPatch AMI2;
+        faces
+        (
+   			(2  5  26 23)
+			(5  8  29 26)
+			(8  11 32 29)
+			(11 14 35 32)
+			(14 17 38 35)
+			(17 2  23 38)
+        );
+    }
+
+    AMI2
+    {
+        type cyclicAMI;
+        inGroups 1(cyclicAMI);
+        matchTolerance 0.0001;
+        transform noOrdering;
+        neighbourPatch AMI1;
+        faces
+        (
+        	(47 51 71 67)
+			(48 47 67 68)
+			(52 48 68 72)
+			(51 52 72 71)
+        );
+    }
+
+    blade1
+    {
+        type wall;
+        faces
+        (
+    		(1 4  25 22)
+			(4 18 39 25)       
+        );
+    }
+
+    blade2
+    {
+        type wall;
+        faces
+        (
+        	(7  10 31 28)
+			(10 19 40 31)       
+        );
+    }
+
+    blade3
+    {
+        type wall;
+        faces
+        (
+        	(13 16 37 34)
+			(16 20 41 37)         
+        );
+    }
+
+    interface1
+    {
+        type patch;
+		faces
+		(
+			(1  16 37 22)
+		);
+    }
+    
+    interface2
+    {
+        type patch;
+		faces
+		(
+			(18 16 37 39)
+		);
+    }
+    
+    interface3
+    {
+        type patch;
+		faces
+		(
+			(7  4  25 28)
+		);
+    }
+    
+    interface4
+    {
+        type patch;
+		faces
+		(
+			(19 4  25 40)
+		);
+    }
+    
+    interface5
+    {
+        type patch;
+		faces
+		(
+			(13 10 31 34)
+		);
+    }
+    
+    interface6
+    {
+        type patch;
+		faces
+		(
+			(20 10 31 41)
+		);
+    }
+);
+
+mergePatchPairs
+(	
+	(interface1 interface2)
+	(interface3 interface4)
+	(interface5 interface6)
+	
+);
+
+// ************************************************************************* //
