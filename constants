@@ -63,7 +63,7 @@ epsilon  							#calc"pow(0.09, 0.75) * pow($k, 1.5) / (2 * $TR * 0.08)";
 omega	        					#calc"sqrt($k) / (pow(0.09, 0.25) * (2 * $TR * 0.08))";
 nut   								#calc"0.09 * pow($k, 2) / $epsilon";
 RPS									#calc"$RPM * (2.0 * 3.141592654 / 60.0)";
-AREF								#calc"$CH * $DP";
+AREF								#calc"$CH * $DP;
 
 
 
