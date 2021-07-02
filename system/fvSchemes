@@ -17,14 +17,14 @@ FoamFile
 
 ddtSchemes
 {
-    default         				CrankNicolson 0.9;
+    default                         CrankNicolson 0.9;
 }
 
 gradSchemes
 {
-    default         				Gauss linear;
-    grad(p)         				Gauss linear;
-    grad(U)         				cellLimited Gauss linear 1;
+    default                         Gauss linear;
+    grad(p)                         Gauss linear;
+    grad(U)                         cellLimited Gauss linear 1;
 }
 
 divSchemes
@@ -38,22 +38,22 @@ divSchemes
 
 laplacianSchemes
 {
-    default         				Gauss linear limited corrected 0.33;
+    default                         Gauss linear limited corrected 0.33;
 }
 
 interpolationSchemes
 {
-    default         				linear;
+    default                         linear;
 }
 
 snGradSchemes
 {
-    default         				limited corrected 0.33;
+    default                         limited corrected 0.33;
 }
 
 wallDist
 {
-									method meshWave;
+                                    method meshWave;
 }
 
 // ************************************************************************* //
