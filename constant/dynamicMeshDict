@@ -14,20 +14,20 @@ FoamFile
     object      dynamicMeshDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-#include					"../constants"
+#include                    "../constants"
 
-dynamicFvMesh   			dynamicMotionSolverFvMesh;
+dynamicFvMesh               dynamicMotionSolverFvMesh;
 
-motionSolverLibs 			("libfvMotionSolvers.so");
+motionSolverLibs            ("libfvMotionSolvers.so");
 
-motionSolver    			solidBody;
+motionSolver                solidBody;
 
-cellZone        			rotor;
+cellZone                    rotor;
 
-solidBodyMotionFunction  	rotatingMotion;
+solidBodyMotionFunction     rotatingMotion;
 
-origin        				(0 0 0); 		// sliding mesh axis of rotation
-axis          				(0 0 1);		// counter-clockwise
-omega         				$RPS; 			// radians per second
+origin                      (0 0 0);        // sliding mesh axis of rotation
+axis                        (0 0 1);        // counter-clockwise
+omega                       $RPS;           // radians per second
 
 // ************************************************************************* //
